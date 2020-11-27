@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>货物管理</title>
+    <script src="../js/vue.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link href="../assets/css/codemirror.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/ace.min.css" />
+    <link rel="stylesheet" href="../font/css/font-awesome.min.css" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="../assets/css/ace-ie.min.css" />
+    <![endif]-->
+    <script src="../js/jquery-1.9.1.min.js"></script>
+    <script src="../assets/layer/layer.js" type="text/javascript" ></script>
+    <script src="../assets/laydate/laydate.js" type="text/javascript"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/typeahead-bs2.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.bootstrap.js"></script>
+</head>
+<body>
+<div class="clearfix" id="app">
+    <div class="admin_info_style">
+        <div class="admin_modify_style" id="Personal" style="width: 600px">
+            <div class="type_title" style="width: 600px">车型管理 </div>
+                <table  style="width: 600px" id="table">
+                    <tr><td width="200" >货物类型编号</td><td width="200" >货物类型</td><td width="200" id="btn">操作</td></tr>
+                    <div v-for="good in goods">
+                        <tr v-for="good in goods">
+                            <td width="200" >{{good.goodid}}</td>
+                            <td width="200" >
+                                {{good.goodname}}
+                            </td>
+                            <td><button onclick="delGood(this)" id="btn1" style="background-color:#e74040;font-size: 13px;height: 25px">删除</button></td>
+                        </tr>
+                    </div>
+                   </td>
+                </table>
+        </div>
+    </div>
+</div>
+</div>
+ <script>
+    function ts(){
+        alert("删除成功！");
+    }
+    function tz(){
+        window.location.href='addcartype.html';
+    }
+</script>
+<!--
+<button type="submit" style="width:99px; height:99px; background-color:#244DFF; " onclick="tz()"  >添加车型</button>
+<button type="submit" style="width:99px; height:99px; background-color:#244DFF; " >删除车型</button>-->
+编号<input type="text" id="ipt1" />
+货物类型<input type="text" id="ipt2" />
+<input type="button"  class="btn btn-success" value="提交" id="tj" onclick="addGood()" />
+<!--<script>-->
+
+<!--    var oUser = document.getElementById('ipt1');-->
+<!--    var oSex = document.getElementById('ipt2');-->
+<!--    var pledge=document.getElementById('ipt3');-->
+<!--    var btn = document.getElementById('tj');-->
+
+<!--    btn.onclick = function(){-->
+
+<!--        var oTable = document.getElementById('table');-->
+<!--        var oTr = document.createElement('tr');-->
+<!--        var oTd1 = document.createElement('td');-->
+<!--        var oTd2 = document.createElement('td');-->
+<!--        var oTd3 = document.createElement('td');-->
+<!--        var oTd4 = document.createElement('td');-->
+<!--        var btn1 = document.createElement('button');-->
+<!--        btn1.innerHTML = '删除';-->
+<!--        btn1.setAttribute('onclick','del(this)');-->
+
+<!--        oTd1.innerHTML = oUser.value;-->
+<!--        oTd2.innerHTML = oSex.value;-->
+<!--        oTd3.innerHTML = pledge.value;-->
+<!--        oTd4.innerHTML = "";-->
+<!--        oTd1.setAttribute('aaa','val');-->
+<!--        oTr.appendChild(oTd1);-->
+<!--        oTr.appendChild(oTd2);-->
+<!--        oTr.appendChild(oTd3);-->
+<!--        oTr.appendChild(oTd4);-->
+<!--        oTd4.appendChild(btn1);-->
+<!--        oTable.appendChild(oTr);-->
+
+<!--    }-->
+<!--    //删除某一行-->
+<!--    function del(obj){-->
+<!--        var oParent = obj.parentNode.parentNode;-->
+<!--        // console.log(oParent)-->
+<!--        document.getElementById('table').removeChild(oParent);-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>
+<script>
+    function addGood() {
+        var goodid=$('#ipt1').val();
+        var goodname=$('#ipt2').val();
+
+        if(goodid!=null&&goodname!=null)
+        {
+            $.ajax({
+                url: "php/api.php?type=addGood",//请求地址
+                dataType: "json",//数据格式
+                type: "post",//请求方式
+                data: {
+                    goodid:goodid,
+                    goodname:goodname
+                },
+                success: function (res) {   //如何发送成功
+                    console.log(res);
+                    console.log(res.data);
+                    if (res.data['isSuccess'] === "1") {
+                        alert("添加成功！");
+                        window.location.href="goods.html";
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert("添加失败");
+                }
+            })
+        }
+        else{
+            alert("信息填写不全！");
+        }
+    }
+    $(document).ready(function() {
+            var app1 = new Vue({
+                el: '#app',
+                data: {
+                    goods:[]
+                }, created: function () {
+                    var self = this;
+                    $.ajax({
+                        url: 'php/api.php?type=getGoodType',
+                        type: 'post',
+                        data: {
+                            //userID: userid,
+                        },
+                        dataType: 'JSON'
+                    }).then(function (res) {
+                        res = eval("(" + res + ")");
+                        console.log(res);
+                        var data = res.data;
+                        console.log(data);
+                        self.goods = data;
+                    })
+                }
+            })
+        }
+    )
+
+</script>
+<script>
+    function delGood(e) {
+        var self=e;
+        var goodid = self.parentNode.parentNode.children[0].textContent;
+        var goodname = self.parentNode.parentNode.children[1].textContent;
+        if(goodid!=null) {
+            $.ajax({
+                url: "php/api.php?type=delGood",//请求地址
+                dataType: "json",//数据格式
+                type: "post",//请求方式
+                data: {
+                    goodid:goodid,
+                    goodname:goodname
+                },
+                success: function (res) {   //如何发送成功
+                    if (res.data['isSuccess'] === "1") {
+                        alert("删除成功！");
+                        window.location.href="goods.html";
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert("删除失败")
+                    window.location.href="index.html";
+                }
+            })
+        }else{
+            alert("删除失败");
+        }
+    }
+
+</script>

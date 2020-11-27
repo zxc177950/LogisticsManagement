@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史订单</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div class="table table-hover text-center">
+    <table class="table" v-cloak>
+        <tr>
+            <th width="10%">订单号</th>
+            <th width="10%">接单司机</th>
+            <th width="10%">司机电话</th>
+            <th width="10%">起始地点</th>
+            <th width="10%">目的地</th>
+            <th width="10%">订单状态</th>
+            <th width="10%">物流状态</th>
+            <th width="10%">货物信息</th>
+            <th width="10%">运费</th>
+            <th width="10%">发车日期</th>
+            <th width="10%">送达日期</th>
+        </tr>
+        <tbody>
+        <div v-for="order in orders">
+            <tr v-for="order in orders">
+                <td>{{order.orders_id}}</td>
+                <td>{{order.driver_name}}</td>
+                <td>{{order.driver_phone}}</td>
+                <td>{{order.begin_address}}</td>
+                <td>{{order.end_address}}</td>
+                <td>{{order.odd_status}}</td>
+                <td>{{order.logistics_status}}</td>
+                <td>{{order.good_infor}}</td>
+                <td>{{order.total_price}}</td>
+                <td>{{order.begin_date}}</td>
+                <td>{{order.end_date}}</td>
+            </tr>
+        </div>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        var userid=localStorage.getItem("userid");
+        if (userid != null) {
+            var app1 = new Vue({
+                el: '#app',
+                data: {
+                    orders: [],
+                }, created: function () {
+                    var self = this;
+                    console.log(cname);
+                    $.ajax({
+                        url: 'php/phpAPI.php?type=getStudentListByCourseName',
+                        type: 'post',
+                        data: {
+                            userid:userid
+                        },
+                        dataType: 'JSON'
+                    }).then(function (res) {
+                        res = eval("(" + res + ")");
+                        console.log(res);
+                        var data = res.data;
+                        console.log(data);
+                        self.orders = data;
+                        alert("数据加载成功")
+                    })
+                }
+            })
+        } else {
+            alert("userid为空")
+        }
+    })
+</script>
+</body>
+</html>

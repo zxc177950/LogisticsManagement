@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <script type="text/javascript" src="../js/jquery.min.js" ></script>
+    <script type="text/javascript" src="../js/common.js" ></script>
+    <script type="text/javascript" src="../assets/layer/layer.js" ></script>
+</head>
+
+<body>
+<div class="wrap login_wrap">
+    <div class="content">
+
+        <div class="logo"></div>
+
+        <div class="login_box">
+
+            <div class="login_form">
+                <div class="login_title">
+                    登录
+                </div>
+                <form action="" method="post">
+
+                    <div class="form_text_ipt">
+                        <input id="userid" name="userid" type="text" placeholder="手机号/邮箱">
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+                    <div class="form_text_ipt">
+                        <input id="password" name="password" type="password" placeholder="密码">
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+                    <div class="form_check_ipt">
+                        <div class="left check_left">
+                            <label><input name="" type="checkbox"> 下次自动登录</label>
+                        </div>
+                        <div class="right check_right">
+                            <!--<a href="#">忘记密码</a>-->
+                        </div>
+                    </div>
+                    <div class="form_btn">
+                        <button type="button" onclick="login()">登录</button>
+                    </div>
+                    <div class="form_reg_btn">
+                        <span>还没有帐号？</span><a href="register.html">马上注册</a>
+                    </div>
+                </form>
+            <!--    <div class="other_login">
+                    <div class="left other_left">
+                        <span>其它登录方式</span>
+                    </div>
+                    <div class="right other_right">
+                        <a href="#">QQ登录</a>
+                        <a href="#">微信登录</a>
+                        <a href="#">微博登录</a>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function login() {
+        var userid = $('#userid').val();
+        var password = $('#password').val();
+        console.log("login");
+        console.log(userid);
+        console.log(typeof userid);
+        console.log(password);
+        if (password && userid) {
+            $.ajax({
+                url: 'php/api.php?type=login',
+                type: 'post',
+                data: {
+                    userid: userid,
+                    password: password
+                },
+                dataType: 'JSON',
+                success: function (res) {
+                    console.log(res);
+                    console.log("SUCCESS");
+                    var data = res.data;
+                    console.log(res.data);
+                    console.log(res.data.usertype);
+                    console.log(res.type);
+                    var type = res.data.type;
+                    var isfreeze=res.data.isfreeze;
+                    console.log(isfreeze);
+                    if(isfreeze==='1'){
+                        layer.alert('账号已被冻结，请联系管理员！',{
+                            title: '提示框',
+                            icon:2,
+                        });
+                        layer.close(index);
+                    }
+                    console.log(data['usertype']);
+                    switch (data['usertype']) {
+                        case "货主":
+                            usertype = "货主";
+                            location.href = "../owner/index.html?id=" + res.data.userid;
+                            break;
+                        case "司机":
+                            usertype = "司机";
+                            location.href = "../driver/index.html?id=" + res.data.userid;
+                            break;
+                        case "管理员":
+                            usertype = "管理员";
+                            location.href = "../admin/index.html?id=" + res.data.userid;
+                            break;
+                        default:
+                            console.log(type);
+                    }
+                    localStorage.setItem("userid",userid);
+                    localStorage.setItem("usertype",data['usertype']);
+                },
+                error: function (err) {
+                    console.log("ERROR");
+                    console.log(err.data);
+                    console.log(err);
+                }
+            })
+        } else {
+            alert("数据项为空");
+        }
+    }
+</script>
+</body>
+</html>

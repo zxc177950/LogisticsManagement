@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <script type="text/javascript" src="../assets/layer/layer.js" ></script>
+    <script src="../js/jquery-1.9.1.min.js"></script>
+    <script src="../assets/layer/layer.js" type="text/javascript" ></script>
+    <script src="../assets/laydate/laydate.js" type="text/javascript"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/typeahead-bs2.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.bootstrap.js"></script>
+</head>
+<body>
+<div class="wrap login_wrap">
+    <div class="content">
+
+        <div class="logo"></div>
+
+        <div class="login_box">
+
+            <div class="login_form">
+                <div class="login_title">
+                    注册
+                </div>
+                <form action="" method="post">
+
+                    <div class="form_text_ipt">
+                        <input id="userid" type="text" placeholder="手机号">
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+                    <div class="form_text_ipt">
+                        <input id="password" type="password" placeholder="密码">
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+                    <div class="form_text_ipt">
+                        <input id="repassword" type="password" placeholder="重复密码">
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+                    <div class="form_text_ipt">
+                        <select id="type"  style="width: 300px;height: 40px;">
+                            <option value="货主">货主</option>
+                            <option value="司机">司机</option>
+                        </select><br/>
+                    </div>
+                    <div class="ececk_warning"><span>数据不能为空</span></div>
+
+                    <div class="form_btn">
+                        <button type="button" onclick="register()">注册</button>
+                    </div>
+                    <div class="form_reg_btn">
+                        <span>已有帐号？</span><a href="index.html">马上登录</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/jquery.min.js" ></script>
+<script type="text/javascript" src="../js/common.js" ></script>
+<script>
+    function register() {
+        var userid=$('#userid').val();
+        var password=$('#password').val();
+        var usertype=$('#type').val();
+        console.log(userid);
+        console.log(password);
+        console.log(usertype);
+        if(userid===''){
+            alert("手机号为空");
+        }
+        if(userid.length!=11){
+            alert("手机号位数错误！请确保为11位数字！")
+        }
+        if(password===''){
+            alert("密码为空")
+        }
+        else{
+            $.ajax({
+                url: 'php/api.php?type=register',
+                type: 'post',
+                data: {
+                    userid: userid,
+                    password: password,
+                    usertype:usertype
+                },
+                dataType: 'JSON',
+                success: function (res) {
+                    console.log(res);
+                    console.log("SUCCESS");
+                    var isSuccess=res.data.isSuccess;
+                    console.log(isSuccess);
+                    if(isSuccess==='0'){
+                        layer.alert('账号已存在！',{
+                            title: '提示框',
+                            icon:2,
+                        });
+                        layer.close();
+                        $('#userid').val("");
+                        $('#password').val("");
+                        $('#repassword').val("");
+                        $('#type').val("");
+                    }else{
+                        layer.alert('注册成功！',{
+                            title: '提示框',
+                            icon:1,
+                        });
+                        setTimeout(function () {
+                            window.location.href="index.html";
+                        },2000)
+                    }
+                },
+                error: function (err) {
+                    console.log("ERROR");
+                    console.log(err.data);
+                    console.log(err);
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+

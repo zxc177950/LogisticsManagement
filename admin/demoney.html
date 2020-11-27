@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>押金管理</title>
+</head>
+<body>
+<h1>
+    押金管理:
+</h1>
+<h4>搜索：<input type="text" name="sou" id="sou" type="text"><button type="submit" class="btn" onclick="ss()">确定</button></h4>
+<br>
+<table border="2" width="1000" id="tb" type="text">
+    <tr>
+        <td width="200" type="text">序号</td><td width="200" type="text">账号</td><td width="200" type="text">姓名</td><td  type="text" width="200">状态</td>
+    </tr>
+    <tr>
+        <td width="200" type="text" type="text">1</td><td width="200" type="text">12345678900</td><td width="200" type="text">张三</td><td type="text">未缴纳</td>
+    </tr>
+</table>
+<script type="text/javascript">
+    function ss() {
+        var t= document.getElementById("sou").value;
+        var tb = document.getElementById("tb");  //根据id找到这个bai表格
+
+        var rows = tb.rows;               //取得这个table下的所du有行
+        for(var i=0;i<rows.length;i++)//循环遍历所有的tr行
+        {
+            for(var j=0;j<rows[i].cells.length;j++)//取得第zhi几行下面的td个数，再次循环遍历该行下面的td元素
+            {
+                var cell = rows[i].cells[j].value;//获取某行下面的某个td元素
+                var cel=rows[i];
+                if(cell==t)
+                    console.log(cel);
+
+
+
+
+            }
+
+
+            }
+
+
+    }
+</script>
+</body>
+</html>
